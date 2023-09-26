@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 
 // Take STATE and send it into REDUX
 
+// TODO: THE BELOW WILL NOT WORK LIKE IT DOES IN PAGES DIRECTRY
+// NEEED TO LOOK INTO THIS TO LEARN WHY....
+
 export default function Home() {
   const [movieTitle, setMovieTitle] = useState<string>("");
 
