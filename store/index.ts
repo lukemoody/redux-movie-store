@@ -18,7 +18,7 @@ function reducer(state = initialState, action) {
         ...state,
         basket: [...state.basket, action.payload],
       };
-    case "LIKE_MOVIE":
+    case "ADD_TO_LIKED_MOVIE":
       return {
         ...state,
         likedMovies: [...state.likedMovies, action.payload],
