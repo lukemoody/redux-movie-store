@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import type { IsMovie, Cart, LikedMovies } from "../types/types";
 
 // type Movie = {
 //     movies: [];
@@ -10,28 +11,45 @@ import { useState, useEffect } from "react";
 // }
 
 // To make the type more dynamic and allow it to represent different props such as `basket` or `liked`, you can make use of an index signature in TypeScript
-type UseSelector<T = string[]> = {
-  [key: string]: T;
-};
+// type UseSelector<T = string[]> = {
+//   [key: string]: T;
+// };
+
+// type IsMovie = {
+//   title: string;
+//   inBasket: boolean;
+//   liked: boolean;
+// };
+
+// type Cart = {
+//   basket: string[];
+// };
+
+// type LikedMovies = {
+//   likedMovies: string[];
+// };
 
 const IndexPage = () => {
   const [movieTitle, setMovieTitle] = useState<string>("");
 
   // Setup useDispatch for use in a similar way to a ref() for example
   const dispatch = useDispatch();
-  const movies = useSelector<UseSelector>((state) => state.movies);
-  const cart = useSelector<UseSelector>((state) => state.basket);
-  const likedMovies = useSelector<UseSelector>((state) => state.likedMovies);
-
-  //   useEffect(() => {
-  //     console.log("movieTitle", movieTitle);
-  //   }, [movieTitle]);
+  const movies = useSelector((state: { movies: IsMovie[] }) => state.movies);
+  const cart = useSelector((state: Cart) => state.basket);
+  //   const likedMovies = useSelector<UseSelector>((state) => state.likedMovies);
+  const likedMovies = useSelector((state: LikedMovies) => state.likedMovies);
 
   const handleAddMovie = () => {
+    const addNewMovieObj = {
+      title: movieTitle,
+      inBasket: false,
+      liked: false,
+    };
+
     // Add your data to Redux using dispatch
     dispatch({
       type: "ADD_MOVIE",
-      payload: movieTitle,
+      payload: addNewMovieObj, // OLD: movieTitle,
     });
 
     // Reset state back to null once data has been set
@@ -46,6 +64,16 @@ const IndexPage = () => {
   };
 
   const handleLikedMovies = (item: string) => {
+    /** OPTION ONE */
+    // const checkIfExists = likedMovies.includes(item);
+    // if (checkIfExists !== true) {
+    //   dispatch({
+    //     type: "ADD_TO_LIKED_MOVIE",
+    //     payload: item,
+    //   });
+    // }
+
+    /** OPTION TWO - logic has been included in the Reducer */
     dispatch({
       type: "ADD_TO_LIKED_MOVIE",
       payload: item,
@@ -69,13 +97,15 @@ const IndexPage = () => {
       <div>
         <h2>My Movies</h2>
         <ul>
-          {movies.map((movie: string, index: number) => (
+          {movies.map((movie: IsMovie, index: number) => (
             <li key={index}>
-              {movie}
-              <button onClick={() => handleAddToBasket(movie)}>
-                Add to basket
+              {movie.title}
+              <button onClick={() => handleAddToBasket(movie.title)}>
+                {!movie.inBasket ? "Add to basket" : "Remove from basket"}
               </button>
-              <button onClick={() => handleLikedMovies(movie)}>Like</button>
+              <button onClick={() => handleLikedMovies(movie.title)}>
+                {!movie.liked ? "Like" : "Unlike"}
+              </button>
             </li>
           ))}
         </ul>
