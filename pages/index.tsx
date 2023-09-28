@@ -2,6 +2,20 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import type { IsMovie, Cart, LikedMovies } from "../types/types";
 
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+  Typography,
+} from "@mui/material";
+import {
+  Favorite,
+  FavoriteBorder,
+  AddShoppingCart,
+  RemoveShoppingCart,
+} from "@mui/icons-material";
+
 // type Movie = {
 //     movies: [];
 // }
@@ -81,11 +95,11 @@ const IndexPage = () => {
   };
 
   return (
-    <>
+    <div className="container">
       <div>
         <h1>My Movie List</h1>
       </div>
-      <div>
+      <div className="add-movie">
         <input
           type="text"
           placeholder="Enter a movie title"
@@ -94,19 +108,37 @@ const IndexPage = () => {
         />
         <button onClick={handleAddMovie}>Add Movie</button>
       </div>
-      <div>
+      <div className="movie-heading">
         <h2>My Movies</h2>
-        <ul>
+        <ul className="movie-list">
           {movies.map((movie: IsMovie, index: number) => (
-            <li key={index}>
-              {movie.title}
-              <button onClick={() => handleAddToBasket(movie.title)}>
-                {!movie.inBasket ? "Add to basket" : "Remove from basket"}
-              </button>
-              <button onClick={() => handleLikedMovies(movie.title)}>
-                {!movie.liked ? "Like" : "Unlike"}
-              </button>
-            </li>
+            <Card key={index} className="movie-card">
+              <CardContent>
+                <Typography variant="h5" component="h2">
+                  {movie.title}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button
+                  startIcon={
+                    movie.inBasket ? (
+                      <RemoveShoppingCart />
+                    ) : (
+                      <AddShoppingCart />
+                    )
+                  }
+                  onClick={() => handleAddToBasket(movie.title)}
+                >
+                  {!movie.inBasket ? "Add to basket" : "Remove from basket"}
+                </Button>
+                <Button
+                  startIcon={movie.liked ? <Favorite /> : <FavoriteBorder />}
+                  onClick={() => handleLikedMovies(movie.title)}
+                >
+                  {!movie.liked ? "Like" : "Unlike"}
+                </Button>
+              </CardActions>
+            </Card>
           ))}
         </ul>
       </div>
@@ -126,7 +158,7 @@ const IndexPage = () => {
           ))}
         </ul>
       </div>
-    </>
+    </div>
   );
 };
 

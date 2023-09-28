@@ -6,8 +6,6 @@ interface RootState {
   movies: IsMovie[];
   basket: Cart[];
   likedMovies: LikedMovies[];
-  //   basket: string[];
-  //   likedMovies: string[];
 }
 
 type RootAction =
@@ -18,12 +16,10 @@ type RootAction =
   | {
       type: "ADD_TO_BASKET";
       payload: Cart;
-      //   payload: Cart | IsMovie;
     }
   | {
       type: "ADD_TO_LIKED_MOVIE";
       payload: LikedMovies;
-      //   payload: LikedMovies | IsMovie;
     };
 
 const initialState: RootState = {
@@ -66,7 +62,7 @@ function reducer(state = initialState, action: RootAction): RootState {
           ? state.basket.filter((movie) => movie !== action.payload)
           : [...state.basket, action.payload],
         movies: state.movies.map((movie) =>
-          movie.title === action.payload
+          (movie.title as unknown) === action.payload // TODO: not sure if this is BEST, but it gets rid of the error
             ? { ...movie, inBasket: !movie.inBasket }
             : { ...movie, inBasket: movie.inBasket }
         ),
@@ -84,7 +80,7 @@ function reducer(state = initialState, action: RootAction): RootState {
         /** OPTION THREE */
         // We can update multiple state values witin each reducer case
         movies: state.movies.map((movie) =>
-          movie.title === action.payload
+          (movie.title as Object) === action.payload // TODO: not sure if this is BEST, but another approach is to say title is an object... lets test
             ? { ...movie, liked: !movie.liked }
             : { ...movie, liked: movie.liked }
         ),
